@@ -71,6 +71,10 @@ var pieceCenterY;
 
 const d = new Date();
 
+var lockDelay = 500;
+var timeToSolidify = 0;
+var lockDelayOver = false;
+
 let game = [
     [0,0,0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0,0,0],
@@ -171,6 +175,8 @@ function restartGame() {
     piece = 2;
     peicesPlaced = 0;
     pieces = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    heldPiece = 0;
+    canHold = true;
     for (var x = 0; x < 10; x++) {
         for (var y = 0; y < 40; y++) {
             game[x][y] = 0;
@@ -213,8 +219,15 @@ function gravityFall() {
         madeFirstMove = true;
         rend();
         pieceCenterY = pieceCenterY - 1;
+        lockDelayOver = false;
     } else if (!madeFirstMove) {
-        solidifyPiece();
+        if (!lockDelayOver) {
+            millis = new Date().getTime();
+            timeToFall = millis + lockDelay;
+            lockDelayOver = true;
+        } else {
+            solidifyPiece();
+        }
     }
 }
 
@@ -393,8 +406,11 @@ function down() {
                 isLastMoveTurn = false;
                 madeFirstMove = true;
                 pieceCenterY = pieceCenterY - 1;
-                millis = new Date().getTime();
-                timeToFall = millis + (gravity*2);
+                if (!lockDelayOver) {
+                    millis = new Date().getTime();
+                    timeToFall = millis + lockDelay;
+                    lockDelayOver = true;
+                }
             } else if (!madeFirstMove) {
                 solidifyPiece();
             }
@@ -431,8 +447,13 @@ function down() {
             rend();
             isLastMoveTurn = false;
             pieceCenterY = pieceCenterY - 1;
+            lockDelayOver = false;
         } else if (!madeFirstMove) {
-            solidifyPiece();
+            if (!lockDelayOver) {
+                millis = new Date().getTime();
+                timeToFall = millis + lockDelay;
+                lockDelayOver = true;
+            } else {solidifyPiece();}
         }
     }
 }
@@ -1004,7 +1025,6 @@ function solidifyPiece() {
 
 
 function lineClear() {
-
     let tSpin = false;
     let tSpinMini = false;
     if (piece == 3 && isLastMoveTurn) {
