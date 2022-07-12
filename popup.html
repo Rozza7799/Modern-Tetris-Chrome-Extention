@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tetris JS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="scores">
+    <div>
+      <p>Score: </p>
+      <p class="score" id="score">0</p>
+    </div>
+    <div>
+      <p>HighScore: </p>
+      <p class="highscore" id="highscore">0</p>
+    </div>
+    <div>
+      <p>LinesCleared: </p>
+      <p class="linesCleared" id="linesCleared">0</p>
+    </div>
+  </div>
+  <div class="settings">
+    <h1 class="sliderDropdown">Settings</h1>
+    <div class="slidecontainer">
+      <div>
+        <p>das</p> 
+        <input type="range" min="0" max="500" value="150" class="slider" id="das">
+        <p id="dasValue">150</p>
+      </div>
+      <div>
+        <p>arr</p> 
+        <input type="range" min="0" max="300" value="30" class="slider" id="arr">
+        <p id="arrValue">30</p>
+      </div>
+      <div>
+        <p>sdf</p> 
+        <input type="range" min="0" max="100" value="0" class="slider" id="sdf">
+        <p id="sdfValue">0</p>
+      </div>
+    </div>
+  </div>
+  <div class="gameSettings">
+    <h1 class="sliderDropdown">Game Settings</h1>
+    <div class="slidecontainer">
+      <div>
+        <p>Gravity</p> 
+        <input type="range" min="0" max="500" value="0" class="slider" id="gravity">
+        <p id="gravityValue">0</p>
+      </div>
+      <button id="restartGame" onclick="restartGame()">Restart game</button>
+    </div>
+  </div>
+  <div class="controls">
+    <h1 class="sliderDropdown">Controls</h1>
+    <div class="slidecontainer">
+      <p>← and → | left and right</p>
+      <p>↑ | Rotate clockwise</p>
+      <p>↓ | Soft drop</p>
+      <p>SPACE | Hard Drop</p>
+      <p>SHIFT or C | Hold Piece</p>
+    </div>
+  </div>
+  
+  <div class="game">
+    <canvas id="heldCanvas" width="100" height="100"></canvas>
+    <canvas id="nextCanvas" width="100" height="340"></canvas>
+    <canvas id="bgCanvas" width="200" height="480"></canvas>
+    <canvas id="gameCanvas" width="200" height="480"></canvas>
+  </div>
+
+<div class="announcementContainer" id="announcementContainer">
+  <h3 class="announcement" id="announcement" width="200" height="480">Announcement</h3>
+</div>
+  <script src="./script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,181 @@
+body {
+  background-color: rgb(55, 55, 55);
+  width: 600px;
+  height: 400px;
+}
+h1 {
+  color: rgb(255, 255, 255);
+}
+p {
+  color: rgb(220, 220, 220);
+}
+canvas {
+    border: 10px;
+    border-color: rgb(0, 0, 0);
+    border-radius: 5px;
+    border-style: solid;
+}
+#wrapper{
+  position:relative;
+}
+#gameCanvas,#bgCanvas{
+  position:absolute; 
+  top:25px; 
+  left:200px;
+}
+#heldCanvas {
+  position: absolute;
+  top:25px;
+  left:50px
+}
+#nextCanvas {
+  position: absolute;
+  top:25px;
+  left:450px
+}
+.scores {
+  position: absolute;
+  top: 400px;
+  display: block;
+  left: 450px;
+  border-radius: 15px;
+  padding: 5px;
+  margin: 0px;
+  background-color: rgb(46, 46, 46);
+  width: 110px;
+}
+.scores div {
+  width: 110px;
+}
+.scores div p{
+  display: inline-block;
+}
+.score {
+  align-content: right;
+  text-align: right;
+}
+.highscore {
+  text-align: right;
+  align-content: right;
+}
+.linesCleared {
+  text-align: right;
+  align-content: right;
+}
+.settings {
+  border-radius: 15px;
+  padding: 5px;
+  margin: 0px;
+  background-color: rgb(46, 46, 46);
+  width: 175px;
+  margin-top: 160px;
+  text-align: center;
+}
+.gameSettings {
+  border-radius: 15px;
+  padding: 5px;
+  margin: 0px;
+  margin-top: 10px;
+  background-color: rgb(46, 46, 46);
+  width: 175px;
+  text-align: center;
+}
+.controls {
+  border-radius: 15px;
+  padding: 5px;
+  margin: 0px;
+  margin-top: 10px;
+  background-color: rgb(46, 46, 46);
+  width: 175px;
+  text-align: center;
+}
+.slidecontainer {
+  display: none;
+}
+.settings:hover .slidecontainer {
+  display: block;
+  border-radius: 10px;
+  background-color: rgb(62, 62, 62);
+}
+.gameSettings:hover .slidecontainer {
+  display: block;
+  border-radius: 10px;
+  background-color: rgb(62, 62, 62);
+}
+.controls:hover .slidecontainer {
+  display: block;
+  border-radius: 10px;
+  background-color: rgb(62, 62, 62);
+}
+.settings p {
+  display: inline-block;
+  text-align: right;
+}
+.gameSettings p {
+  display: inline-block;
+  text-align: right;
+  padding: 5px;
+}
+.gameSettings p {
+  display: inline-block;
+  text-align: right;
+  padding: 5px;
+}
+.slider {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  -webkit-appearance: none;
+  width: 35%;
+  height: 10px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: rgb(148, 148, 148);
+  cursor: pointer;
+}
+.slider:hover {
+  opacity: 1;
+}
+button {
+  background-color: rgb(46, 46, 46);
+  border: none;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+button:hover {
+  background-color: rgb(56, 56, 56);
+}
+.announcementContainer {
+  top: 100px;
+  left: 210px;
+  position: absolute;
+  opacity: 0;
+  margin: 0;
+  font-family: "Oswald", sans-serif;
+  color: #444;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+.announcement {
+  font-size: 20px;
+  width: 200px;
+  text-align: center;
+  text-transform: uppercase;
+  transform: rotate(-5deg)
+              skew(-5deg);
+  background-color: #ffc;
+}
