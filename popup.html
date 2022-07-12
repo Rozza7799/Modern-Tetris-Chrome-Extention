@@ -23,6 +23,10 @@
       <p>LinesCleared: </p>
       <p class="linesCleared" id="linesCleared">0</p>
     </div>
+    <div>
+      <p>Level: </p>
+      <p class="level" id="level">0</p>
+    </div>
   </div>
   <div class="settings">
     <h1 class="sliderDropdown">Settings</h1>
@@ -52,6 +56,9 @@
         <input type="range" min="0" max="500" value="0" class="slider" id="gravity">
         <p id="gravityValue">0</p>
       </div>
+      <p id="GameSwitchText">Play with levels?</p>
+      <label class="switch">
+      <input type="checkbox" id="playWithLevelsCheckBox" checked>
       <button id="restartGame" onclick="restartGame()">Restart game</button>
     </div>
   </div>

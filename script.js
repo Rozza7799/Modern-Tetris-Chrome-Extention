@@ -53,10 +53,27 @@ var gravity = 0;
 var gravityValue = document.getElementById("gravityValue");
 
 gravitySlider.oninput = function() {
-    gravityValue.innerHTML = this.value;
-    gravity = parseInt(this.value);
+    if (!playWithLevels) {
+        gravityValue.innerHTML = this.value;
+        gravity = parseInt(this.value);
+        console.log("yes");
+    }
 }
 
+var playWithLevelsCheckbox = document.getElementById("playWithLevelsCheckBox");
+var playWithLevels = true;
+playWithLevelsCheckbox.oninput = function() {
+    playWithLevels = this.value;
+    restartGame();
+}
+playWithLevelsCheckbox.addEventListener('change', () => {
+    if(playWithLevelsCheckbox.checked) {
+        playWithLevels = true;
+    } else {
+        playWithLevels = false;
+    }
+    restartGame();
+  });
 var restartGameButton = document.getElementById("restartGame");
 
 restartGameButton.onclick = function() {
@@ -123,6 +140,12 @@ announce("Modern Tetris!");
 */
 
 window.main = function () { 
+    if (playWithLevels) {
+        level = Math.ceil(linesCleared / 10);
+        gravity = Math.pow((0.8-((level-1)*0.007)), level-1)*1000;
+    } else {
+        level = 0;
+    }
     window.requestAnimationFrame( main );
     millis = new Date().getTime();
     if (leftPressed) {
@@ -177,6 +200,7 @@ function restartGame() {
     pieces = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     heldPiece = 0;
     canHold = true;
+    linesCleared = 0;
     for (var x = 0; x < 10; x++) {
         for (var y = 0; y < 40; y++) {
             game[x][y] = 0;
@@ -376,8 +400,8 @@ function down() {
         let madeFirstMove = false;
         let canMove = true;
         while (canMove) {
-            let piecesX = [0, 0, 0, 0]
-            let piecesY = [0, 0, 0, 0]
+            let piecesX = [0, 0, 0, 0];
+            let piecesY = [0, 0, 0, 0];
             let counter = 0;
             for (var x = 0; x < 10; x++) {
                 for (var y = 0; y < 40; y++) {
@@ -416,8 +440,8 @@ function down() {
             }
         }
     } else {
-        let piecesX = [0, 0, 0, 0]
-        let piecesY = [0, 0, 0, 0]
+        let piecesX = [0, 0, 0, 0];
+        let piecesY = [0, 0, 0, 0];
         let counter = 0;
         for (var x = 0; x < 10; x++) {
             for (var y = 0; y < 40; y++) {
@@ -1503,4 +1527,5 @@ function rend() {
     document.getElementById("highscore").innerHTML = localStorage.getItem("highScore");
     document.getElementById("score").innerHTML = score;
     document.getElementById("linesCleared").innerHTML = linesCleared;
+    document.getElementById("level").innerHTML = level;
 }
