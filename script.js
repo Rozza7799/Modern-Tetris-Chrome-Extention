@@ -139,7 +139,12 @@ announce("Modern Tetris!");
     ||MAIN LOOP||
 */
 
+let justin = document.getElementById("justin");
+let justinRotation = 0;
 window.main = function () { 
+    justinRotation += 5;
+    justin.style.filter = "hue-rotate(" + (2 * justinRotation) + "deg)";
+    justin.style.transform = 'rotate(' + justinRotation + 'deg)'
     if (playWithLevels) {
         level = Math.ceil(linesCleared / 10);
         gravity = Math.pow((0.8-((level-1)*0.007)), level-1)*1000;
