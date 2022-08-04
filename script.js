@@ -1,6 +1,3 @@
-let piece = 2;
-let peicesPlaced = 0;
-let pieces = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 //2  3  4  5  6  7  8
 //O  T  L  J  S  Z  I
 var c = document.getElementById("gameCanvas");
@@ -29,7 +26,40 @@ var sdfSlider = document.getElementById("sdf");
 var arr = 30  //rate of shifting to the side
 var das = 150 // how long before it starts shifting
 var kdc = 300; // how long before it changes direction
-var sdf = 0;   // how long between falls for soft dropping, 0 for soft drop
+var sdf = 30;   // how long between falls for soft dropping, 0 for soft drop
+
+let score = 0;
+let threeCorners = false;
+let tstKick = false;
+let isLastMoveTurn;
+
+let btb = 0;
+let combo = 0;
+let level = 1;
+let linesCleared = 0;
+
+var heldPiece = 0;
+var canHold = true;
+
+const howLongAnnounce = 1000;
+let announceTime = 0;
+let announcement = "";
+
+if (localStorage.getItem("arr") == null) {
+    localStorage.setItem("arr", 30);
+} else {
+    arr=parseInt(localStorage.getItem("arr"));
+}
+if (localStorage.getItem("das") == null) {
+    localStorage.setItem("das", 150);
+} else {
+    das=parseInt(localStorage.getItem("das"));
+}
+if (localStorage.getItem("sdf") == null) {
+    localStorage.setItem("sdf", 30);
+} else {
+    sdf=parseInt(localStorage.getItem("sdf"));
+}
 
 var dasValue = document.getElementById("dasValue");
 var arrValue = document.getElementById("arrValue");
@@ -38,14 +68,17 @@ var sdfValue = document.getElementById("sdfValue");
 dasSlider.oninput = function() {
     dasValue.innerHTML = this.value;
     das = parseInt(this.value);
+    localStorage.setItem("das", this.value);
 }
 arrSlider.oninput = function() {
     arrValue.innerHTML = this.value;
     arr = parseInt(this.value);
+    localStorage.setItem("arr", this.value);
 }
 sdfSlider.oninput = function() {
     sdfValue.innerHTML = this.value;
     sdf = parseInt(this.value);
+    localStorage.setItem("sdf", this.value);
 }
 
 var gravitySlider = document.getElementById("gravity");
@@ -56,7 +89,6 @@ gravitySlider.oninput = function() {
     if (!playWithLevels) {
         gravityValue.innerHTML = this.value;
         gravity = parseInt(this.value);
-        console.log("yes");
     }
 }
 
@@ -83,8 +115,8 @@ restartGameButton.onclick = function() {
 var timeToFall = 0;
 
 var pieceRot = 0; //0, 1, 2, 3
-var pieceCenterX;
-var pieceCenterY;
+var pieceCenterX = 0;
+var pieceCenterY = 0;
 
 const d = new Date();
 
@@ -105,36 +137,71 @@ let game = [
     [0,0,0,0,0,0,0,0,0,0]
 ];
 
-for (var x = 0; x < 10; x++) {
-    for (var y = 0; y < 40; y++) {
-        game[x][y] = 0;
+let piece = 2;
+let pieces = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+if (localStorage.getItem("storedPieces") != null) {
+    let storedPieces = localStorage.getItem("storedPieces").split(",");
+    for (var i = 0; i < 14; i++) {
+        pieces[i] = storedPieces[i];
     }
+    piece = pieces[0];
+    rendNext();
 }
 
-let score = 0;
-let threeCorners = false;
-let tstKick = false;
-let isLastMoveTurn;
+if (localStorage.getItem("heldPiece") != null) {
+    heldPiece = localStorage.getItem("heldPiece");
+    rendHeld();
+}
 
-let btb = 0;
-let combo = 0;
-let level = 1;
-let linesCleared = 0;
+if (localStorage.getItem("storedGame") == null) {
+    for (var x = 0; x < 10; x++) {
+        for (var y = 0; y < 40; y++) {
+            game[x][y] = 0;
+        }
+    }
+    solidifyPiece();
+} else {
+    let storedGame = localStorage.getItem("storedGame").split(",");
+    for (var y = 0; y < 40; y++) {
+        for (var x = 0; x < 10; x++) {
+            game[x][y] = storedGame[x + (10*y)];
+        }
+    }
+    
+}
+if (localStorage.getItem("canHold") != null) {
+    canHold = localStorage.getItem("canHold");
+}
+if (localStorage.getItem("pieceCenterX") != null) {
+    pieceCenterX = parseInt(localStorage.getItem("pieceCenterX"));
+}
+if (localStorage.getItem("pieceCenterY") != null) {
+    pieceCenterY = localStorage.getItem("pieceCenterY");
+}
+if (localStorage.getItem("pieceRot") != null) {
+    pieceRot = localStorage.getItem("pieceRot");
+}
+if (localStorage.getItem("storedScore") != null) {
+    score = score + parseInt(localStorage.getItem("storedScore"));
+}
+if (localStorage.getItem("linesCleared") != null) {
+    linesCleared = parseInt(localStorage.getItem("linesCleared"));
+}
 
-var heldPiece = 0;
-var canHold = true;
-
-const howLongAnnounce = 2000;
-let announceTime = 0;
-let announcement = "";
-
-solidifyPiece();
+left();
+right();
 
 rend();
 rendHeld();
+rendNext();
 
 var announcementContainer = document.getElementById("announcementContainer");
 announce("Modern Tetris!");
+
+console.log(pieceCenterX);
+console.log(pieceCenterY);
+
 /*
     ||MAIN LOOP||
 */
@@ -196,7 +263,6 @@ function restartGame() {
     threeCorners = false;
     tstKick = false;
     piece = 2;
-    peicesPlaced = 0;
     pieces = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     heldPiece = 0;
     canHold = true;
@@ -296,6 +362,9 @@ window.addEventListener("keydown", function (event) { //Bindings
             break;
         case "Shift":
             hold();
+            break;
+        case "r":
+            restartGame();
             break;
       default:
         return;
@@ -758,8 +827,26 @@ function testTurn(piecesXa, piecesYa, piecesXb, piecesYb, piecesXc, piecesYc, pi
     pieceRot++;
     if (pieceRot == 4) {
         pieceRot = 0;
+    
     }
-
+    var canMoveAfter = true
+    for (var x = 0; x < 10; x++) {
+        for (var y = 0; y < 40 ; y++) {
+            if (game[x][y] == 1) {
+                if (y == 0) {
+                    canMoveAfter = false;
+                } else if (game[x][y-1] > 1) {
+                    canMoveAfter = false;
+                }
+            }
+        }
+    }
+    if (!canMoveAfter) {
+        millis = new Date().getTime();
+        timeToFall = millis + lockDelay;
+        lockDelayOver = true;
+    }
+    
     pieceCenterX = pieceCenterX + offsetX;
     pieceCenterY = pieceCenterY + offsetY;
 
@@ -810,6 +897,25 @@ function iTestTurn(piecesXa, piecesYa, piecesXb, piecesYb, piecesXc, piecesYc, p
         pieceCenterY++;
     }
 
+    var canMoveAfter = true
+    for (var x = 0; x < 10; x++) {
+        for (var y = 0; y < 40 ; y++) {
+            if (game[x][y] == 1) {
+                if (y == 0) {
+                    canMoveAfter = false;
+                } else if (game[x][y-1] > 1) {
+                    canMoveAfter = false;
+                }
+            }
+        }
+    }
+    if (!canMoveAfter) {
+        millis = new Date().getTime();
+        timeToFall = millis + lockDelay;
+        lockDelayOver = true;
+    }
+    
+
     pieceRot++;
     if (pieceRot == 4) {
         pieceRot = 0;
@@ -848,6 +954,24 @@ function inverseTestTurn(piecesXa, piecesYa, piecesXb, piecesYb, piecesXc, piece
     if (pieceRot == -1) {
         pieceRot = 3;
     }
+    var canMoveAfter = true
+    for (var x = 0; x < 10; x++) {
+        for (var y = 0; y < 40 ; y++) {
+            if (game[x][y] == 1) {
+                if (y == 0) {
+                    canMoveAfter = false;
+                } else if (game[x][y-1] > 1) {
+                    canMoveAfter = false;
+                }
+            }
+        }
+    }
+    if (!canMoveAfter) {
+        millis = new Date().getTime();
+        timeToFall = millis + lockDelay;
+        lockDelayOver = true;
+    }
+    
 
     pieceCenterX = pieceCenterX + offsetX;
     pieceCenterY = pieceCenterY + offsetY;
@@ -898,6 +1022,24 @@ function inverseITestTurn(piecesXa, piecesYa, piecesXb, piecesYb, piecesXc, piec
     if (pieceRot == 3) {
         pieceCenterY++;
     }
+    var canMoveAfter = true
+    for (var x = 0; x < 10; x++) {
+        for (var y = 0; y < 40 ; y++) {
+            if (game[x][y] == 1) {
+                if (y == 0) {
+                    canMoveAfter = false;
+                } else if (game[x][y-1] > 1) {
+                    canMoveAfter = false;
+                }
+            }
+        }
+    }
+    if (!canMoveAfter) {
+        millis = new Date().getTime();
+        timeToFall = millis + lockDelay;
+        lockDelayOver = true;
+    }
+    
 
     pieceRot = pieceRot - 1;
     if (pieceRot == -1) {
@@ -1223,6 +1365,7 @@ function hold() {
         } else {
             piece = heldPiece;
             heldPiece = pieces[0];
+            pieces[0] = piece;
         }
         if (piece == 2) { //0
             if (game[4][20] == 0 && game[5][20] == 0 && game[4][21] == 0 && game[5][21] == 0) {
@@ -1528,4 +1671,23 @@ function rend() {
     document.getElementById("score").innerHTML = score;
     document.getElementById("linesCleared").innerHTML = linesCleared;
     document.getElementById("level").innerHTML = level;
+    var gameToStore = "";
+    for (var y = 0; y < 40; y++) {
+        for (var x = 0; x < 10; x++) {
+            gameToStore = gameToStore + game[x][y] + ",";
+        }
+    }
+    storedGame = localStorage.setItem("storedGame", gameToStore);
+
+    let piecesToStore = "";
+    for (var i = 0; i < 14; i++) {
+        piecesToStore = piecesToStore + pieces[i] + ",";
+    }
+    localStorage.setItem("storedPieces", piecesToStore);
+    localStorage.setItem("heldPiece", heldPiece);
+    localStorage.setItem("pieceCenterX", pieceCenterX);
+    localStorage.setItem("pieceCenterY", pieceCenterY);
+    localStorage.setItem("pieceRot", pieceRot);
+    localStorage.setItem("storedScore", score);
+    localStorage.setItem("linesCleared", linesCleared);
 }
