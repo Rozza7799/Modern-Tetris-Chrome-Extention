@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Modern Tetris",
-    "version": "1.1.1",
+    "version": "1.2.0",
     "description": "A modern tetris remake that includes SRS, hold, hard drop, sensitivity and other features!",
     "action": {
         "default_popup": "popup.html",

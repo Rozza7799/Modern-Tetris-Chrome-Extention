@@ -112,7 +112,7 @@ restartGameButton.onclick = function() {
     restartGame();
 }
 
-var timeToFall = 0;
+var timeToFall = new Date().getTime() + 1000;
 
 var pieceRot = 0; //0, 1, 2, 3
 var pieceCenterX = 0;
@@ -177,7 +177,7 @@ if (localStorage.getItem("pieceCenterX") != null) {
     pieceCenterX = parseInt(localStorage.getItem("pieceCenterX"));
 }
 if (localStorage.getItem("pieceCenterY") != null) {
-    pieceCenterY = localStorage.getItem("pieceCenterY");
+    pieceCenterY = parseInt(localStorage.getItem("pieceCenterY")) - 1;
 }
 if (localStorage.getItem("pieceRot") != null) {
     pieceRot = localStorage.getItem("pieceRot");
@@ -198,9 +198,6 @@ rendNext();
 
 var announcementContainer = document.getElementById("announcementContainer");
 announce("Modern Tetris!");
-
-console.log(pieceCenterX);
-console.log(pieceCenterY);
 
 /*
     ||MAIN LOOP||
@@ -231,8 +228,8 @@ window.main = function () {
         down();
         downCooldown = millis + sdf;
     }
-    if (gravity > 0 && timeToFall < millis) {
-        timeToFall = millis + gravity;
+    while (gravity > 0 && timeToFall < millis) {
+        timeToFall = timeToFall + gravity;
         gravityFall();
     }
     if (announceTime + howLongAnnounce > millis) {
